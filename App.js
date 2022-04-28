@@ -1,17 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import ScreenA from './screens/ScreenA';
+import RandomCat from './screens/RandomCat';
+import CatImages from './screens/CatImages';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={ScreenA} />
-      </Stack.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Images') {
+              iconName = focused
+                ? 'images'
+                : 'images';
+            } else if (route.name === 'Random Cat') {
+              iconName = focused ? 'infinite' : 'infinite';
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',})
+        }
+      >
+        <Tab.Screen 
+          name="Images" 
+          component={CatImages} 
+        />
+        <Tab.Screen 
+          name="Random Cat" 
+          component={RandomCat} 
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
