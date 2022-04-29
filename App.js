@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import RandomCat from './screens/RandomCat';
 import CatImages from './screens/CatImages';
+import Breeds from './screens/Breeds';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -26,6 +27,8 @@ export default function App() {
                 : 'images';
             } else if (route.name === 'Random Cat') {
               iconName = focused ? 'infinite' : 'infinite';
+            } else if (route.name == 'Breeds') {
+              iconName = focused ? 'images-outline' : 'images-outline';
             }
 
             // You can return any component that you like here!
@@ -42,6 +45,10 @@ export default function App() {
         <Tab.Screen 
           name="Random Cat" 
           component={RandomCat} 
+        />
+         <Tab.Screen 
+          name="Breeds" 
+          component={Breeds} 
         />
       </Tab.Navigator>
     </NavigationContainer>
