@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { FlatList, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
+import { useWindowDimensions } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 const renderItem = ({ item }) => {
     return (
@@ -19,7 +21,7 @@ const renderItem = ({ item }) => {
 )};
 
 
-const CatImages = () => {
+const CatImages = ({ type }) => {
     const [list, setList] = useState([]);
     const [page, setPage] = useState(0);
     const [refreshing, setRefreshing] = React.useState(false);
@@ -29,7 +31,8 @@ const CatImages = () => {
     },[])
 
     const fetchCatImages = () => {
-        fetch(`https://api.thecatapi.com/v1/images/search?limit=10&page=${page}&order=Desc`)
+        console.log("type", type)
+        fetch(`https://api.thecatapi.com/v1/images/search?limit=10&page=${page}&order=Desc&mime_types=${type}`)
         .then(res => res.json())
         .then(res => {
             setList([...list, ...res]);
@@ -54,12 +57,48 @@ const CatImages = () => {
     )
 }
 
+const FirstRoute = () => (
+    <CatImages type={'jpg,png'} style={{ flex: 1, backgroundColor: '#ff4081' }} />
+);
+
+const SecondRoute = () => (
+    <CatImages type={"gif"} style={{ flex: 1, backgroundColor: '#673ab7' }} />
+);
+
+const renderScene = SceneMap({
+    images: FirstRoute,
+    gif: SecondRoute,
+});
+
+export default function TabViewExample() {
+    const layout = useWindowDimensions();
+
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'images', title: 'Images' },
+        { key: 'gif', title: 'Gifs' },
+    ]);
+
+    return (
+        <TabView
+            lazy
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: layout.width }}
+            style={{ backgroundColor: 'black' }}
+            renderTabBar={props => <TabBar {...props} indicatorStyle={styles.indicator} style={styles.tabbar} />}
+            />
+    );
+}
+
 const styles = StyleSheet.create({
     indicator: {
         justifyContent: 'center',
         position: 'absolute',
         zIndex: -1
+    },
+    tabbar: {
+        backgroundColor: 'black',
     }
 })
-
-export default CatImages;
